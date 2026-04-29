@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UA Story Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#A31F34;
+  --dark:#1C2B3A;
+  --mid:#6b6965;
+  --light:#f5f4f1;
+  --border:#e8e6de;
+  --white:#fff;
+}
+body{
+  background:var(--light);
+  min-height:100vh;
+  font-family:'DM Sans',sans-serif;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:2rem 1rem 4rem;
+}
+
+/* Header */
+.ua-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:2.5rem;
+  width:100%;max-width:420px;
+}
+.ua-logo-wrap{
+  width:40px;height:40px;background:var(--red);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.ua-logo-wrap svg{width:22px;height:22px;}
+.ua-brand-name{font-family:'DM Serif Display',serif;font-size:18px;color:var(--dark);}
+.ua-brand-sub{font-size:11px;color:var(--mid);letter-spacing:.05em;text-transform:uppercase;}
+
+/* Phone frame */
+.phone{
+  width:100%;max-width:390px;
+  background:var(--white);
+  border-radius:40px;
+  border:8px solid var(--dark);
+  box-shadow:0 24px 60px rgba(28,43,58,.18);
+  overflow:hidden;
+  position:relative;
+}
+.phone-notch{
+  width:120px;height:28px;background:var(--dark);
+  border-radius:0 0 18px 18px;
+  margin:0 auto;position:relative;z-index:2;
+}
+
+/* Instagram UI */
+.ig-app{background:#fff;min-height:700px;}
+.ig-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px 6px;
+  border-bottom:0.5px solid #dbdbdb;
+}
+.ig-topbar-logo{font-family:'DM Serif Display',serif;font-size:22px;color:#000;letter-spacing:-.5px;}
+.ig-topbar-icons{display:flex;gap:16px;}
+.ig-topbar-icons svg{width:24px;height:24px;stroke:#000;fill:none;stroke-width:1.8;}
+
+/* Stories bar */
+.ig-stories{
+  display:flex;gap:12px;padding:10px 14px;
+  overflow-x:auto;border-bottom:0.5px solid #dbdbdb;
+}
+.ig-stories::-webkit-scrollbar{display:none;}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;}
+.story-ring{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+  padding:2px;
+}
+.story-ring.ua{background:linear-gradient(45deg,var(--red),#D4A017);}
+.story-avatar{
+  width:100%;height:100%;border-radius:50%;
+  background:#f0f0f0;border:2px solid white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:var(--mid);overflow:hidden;
+}
+.story-avatar img{width:100%;height:100%;object-fit:cover;}
+.story-name{font-size:10px;color:#262626;max-width:60px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* Post */
+.ig-post{border-bottom:0.5px solid #dbdbdb;}
+.post-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;}
+.post-user{display:flex;align-items:center;gap:10px;}
+.post-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(45deg,var(--red),#D4A017);
+  padding:2px;flex-shrink:0;
+}
+.post-avatar-inner{
+  width:100%;height:100%;border-radius:50%;background:#f0f0f0;
+  border:2px solid white;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:700;color:var(--red);
+  overflow:hidden;
+}
+.post-avatar-inner img{width:100%;height:100%;object-fit:cover;}
+.post-username{font-size:13px;font-weight:600;color:#262626;}
+.post-location{font-size:11px;color:#8e8e8e;}
+.post-more svg{width:20px;height:20px;stroke:#262626;fill:none;stroke-width:2;}
+
+/* Post image */
+.post-img-wrap{
+  width:100%;aspect-ratio:1;background:#f0f0f0;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.post-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.post-img-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  color:#ccc;
+}
+.post-img-placeholder svg{width:40px;height:40px;stroke:#ddd;fill:none;stroke-width:1.5;}
+.post-img-placeholder span{font-size:12px;color:#ccc;}
+
+/* Generating animation */
+.generating{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.gen-spinner{
+  width:32px;height:32px;border:3px solid #f0f0f0;
+  border-top-color:var(--red);border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.gen-text{font-size:12px;color:#aaa;text-align:center;line-height:1.5;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Post actions */
+.post-actions{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 4px;}
+.post-actions-left{display:flex;gap:14px;}
+.post-actions svg{width:24px;height:24px;stroke:#262626;fill:none;stroke-width:1.8;}
+.post-likes{font-size:13px;font-weight:600;color:#262626;padding:0 12px 4px;}
+.post-caption{padding:0 12px 8px;font-size:13px;color:#262626;line-height:1.5;}
+.post-caption strong{font-weight:700;}
+.post-caption .hashtags{color:#00376b;margin-top:4px;display:block;}
+.post-time{font-size:10px;color:#8e8e8e;padding:0 12px 12px;text-transform:uppercase;letter-spacing:.04em;}
+
+/* Status bar */
+.status-strip{
+  display:none;
+  align-items:center;gap:10px;
+  background:var(--red);color:white;
+  padding:10px 16px;font-size:12px;font-weight:500;
+  border-radius:10px;margin-bottom:1.5rem;
+  width:100%;max-width:390px;
+}
+.status-strip.show{display:flex;}
+.status-strip.success{background:#085041;}
+.status-strip svg{width:16px;height:16px;flex-shrink:0;}
+.strip-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+
+/* Refresh button */
+.refresh-btn{
+  margin-top:1.5rem;
+  padding:10px 24px;background:var(--dark);color:white;
+  border:none;border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;cursor:pointer;
+  display:flex;align-items:center;gap:8px;transition:opacity .15s;
+}
+.refresh-btn:hover{opacity:.85;}
+.refresh-btn svg{width:14px;height:14px;stroke:white;fill:none;stroke-width:2;}
+
+/* Footer note */
+.footnote{margin-top:1.5rem;font-size:11px;color:#aaa;text-align:center;max-width:320px;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="ua-header">
+  <div class="ua-logo-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  </div>
+  <div>
+    <div class="ua-brand-name">Urban Assembly</div>
+    <div class="ua-brand-sub">Story preview</div>
+  </div>
+</div>
+
+<div class="status-strip" id="status-strip">
+  <div class="strip-spinner" id="strip-spinner"></div>
+  <svg id="strip-icon" viewBox="0 0 24 24" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="status-text">Fetching latest story…</span>
+</div>
+
+<!-- Phone mockup -->
+<div class="phone">
+  <div class="phone-notch"></div>
+  <div class="ig-app">
+
+    <!-- Top bar -->
+    <div class="ig-topbar">
+      <div class="ig-topbar-logo">Instagram</div>
+      <div class="ig-topbar-icons">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </div>
+    </div>
+
+    <!-- Stories -->
+    <div class="ig-stories">
+      <div class="story-item">
+        <div class="story-ring ua">
+          <div class="story-avatar" style="background:var(--red);color:white;font-size:13px;font-weight:700;">UA</div>
+        </div>
+        <div class="story-name">uatest2026</div>
+      </div>
+      <div class="story-item">
+        <div class="story-ring"><div class="story-avatar">JR</div></div>
+        <div class="story-name">j.rivera</div>
+      </div>
+      <div class="story-item">
+        <div class="story-ring"><div class="story-avatar">ML</div></div>
+        <div class="story-name">m.lopez</div>
+      </div>
+      <div class="story-item">
+        <div class="story-ring"><div class="story-avatar">AT</div></div>
+        <div class="story-name">a.thomas</div>
+      </div>
+    </div>
+
+    <!-- Post -->
+    <div class="ig-post">
+      <div class="post-header">
+        <div class="post-user">
+          <div class="post-avatar">
+            <div class="post-avatar-inner" style="background:var(--red);color:white;font-weight:700;font-size:11px;">UA</div>
+          </div>
+          <div>
+            <div class="post-username">uatest2026</div>
+            <div class="post-location" id="post-location">Urban Assembly</div>
+          </div>
+        </div>
+        <div class="post-more"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+      </div>
+
+      <div class="post-img-wrap" id="post-img-wrap">
+        <div class="post-img-placeholder" id="img-placeholder">
+          <div class="generating">
+            <div class="gen-spinner"></div>
+            <div class="gen-text">Waiting for a story submission…<br>Submit the form to see the preview here.</div>
+          </div>
+        </div>
+        <img id="post-img" src="" alt="" style="display:none;">
+      </div>
+
+      <div class="post-actions">
+        <div class="post-actions-left">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+      </div>
+      <div class="post-likes" id="post-likes">0 likes</div>
+      <div class="post-caption" id="post-caption">
+        <strong>uatest2026</strong> Submit a story from the form to see the AI-generated caption appear here.
+      </div>
+      <div class="post-time" id="post-time">just now</div>
+    </div>
+
+  </div>
+</div>
+
+<button class="refresh-btn" onclick="fetchLatest()">
+  <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+  Check for new story
+</button>
+
+<div class="footnote">This preview updates when a new story is submitted via the UA Story Form. Powered by n8n + GPT-4o + Cloudinary.</div>
+
+<script>
+const JSONBIN_BIN_ID = '69f2062a856a68218988249b';
+const JSONBIN_API_KEY = '$2a$10$A5VVsePwcK.cP33wxvO8TeCBg101xLpLEofEjtsJ4n4lYmLRFeu.2';
+
+function showStatus(type, msg) {
+  const strip = document.getElementById('status-strip');
+  const spinner = document.getElementById('strip-spinner');
+  const icon = document.getElementById('strip-icon');
+  const text = document.getElementById('status-text');
+  strip.className = 'status-strip show ' + (type === 'success' ? 'success' : '');
+  spinner.style.display = type === 'loading' ? 'block' : 'none';
+  icon.style.display = type === 'success' ? 'block' : 'none';
+  text.textContent = msg;
+}
+
+function hideStatus() {
+  document.getElementById('status-strip').className = 'status-strip';
+}
+
+function renderPost(data) {
+  if (!data) return;
+  let rawCaption = '';
+  if (typeof data.caption === 'string') {
+    rawCaption = data.caption;
+    try { const p = JSON.parse(rawCaption.replace(/```json|```/g,'')); if(p.caption) rawCaption=p.caption; } catch(e){}
+  } else if (data.caption && typeof data.caption === 'object') {
+    rawCaption = data.caption.output || data.caption.text || data.caption.content || '';
+  }
+  const imageUrl = typeof data.image_url === 'string' ? data.image_url.trim() : '';
+  if (imageUrl) {
+    const img = document.getElementById('post-img');
+    const placeholder = document.getElementById('img-placeholder');
+    img.onload = () => { img.style.display='block'; placeholder.style.display='none'; };
+    img.onerror = () => { placeholder.innerHTML='<div class=\"generating\"><div class=\"gen-text\">Image could not load.</div></div>'; };
+    img.src = imageUrl;
+  }
+  const hashtagMatch = rawCaption.match(/#[\w\u0080-\uFFFF]+/g);
+  const hashtags = hashtagMatch ? hashtagMatch.join(' ') : '';
+  const cleanCaption = rawCaption.replace(/#[\w\u0080-\uFFFF]+/g,'').replace(/\n+/g,' ').trim();
+  document.getElementById('post-caption').innerHTML =
+    '<strong>uatest2026</strong> ' + (cleanCaption || 'Story submitted!') +
+    (hashtags ? '<span class=\"hashtags\">' + hashtags + '</span>' : '');
+  const school = typeof data.school_name === 'string' ? data.school_name : 'Urban Assembly';
+  document.getElementById('post-location').textContent = school;
+  document.getElementById('post-likes').textContent = (Math.floor(Math.random()*80)+20) + ' likes';
+  let dateStr = 'JUST NOW';
+  if (data.submitted_at && typeof data.submitted_at === 'string') {
+    const d = new Date(data.submitted_at);
+    if (!isNaN(d.getTime())) dateStr = d.toLocaleDateString('en-US',{month:'long',day:'numeric'}).toUpperCase();
+  }
+  document.getElementById('post-time').textContent = dateStr;
+  showStatus('success', 'Latest story loaded!');
+  setTimeout(hideStatus, 3000);
+}
+
+async function fetchLatest() {
+  if (!JSONBIN_BIN_ID || JSONBIN_BIN_ID === 'YOUR_JSONBIN_BIN_ID') {
+    showStatus('error', 'JSONBin not configured yet — paste your Bin ID in the script.');
+    return;
+  }
+  showStatus('loading', 'Fetching latest story…');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    });
+    const json = await res.json();
+    renderPost(json.record);
+  } catch(e) {
+    showStatus('error', 'Could not fetch — check your JSONBin credentials.');
+  }
+}
+
+fetchLatest();
+setInterval(fetchLatest, 30000);
+</script>
+</body>
+</html>
